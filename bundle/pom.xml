@@ -25,7 +25,7 @@
   </parent>
   <artifactId>dropwizard-mongo</artifactId>
   <packaging>jar</packaging>
-  <name>Dropwizard mongo</name>
+  <name>Dropwizard Mongo</name>
   <dependencies>
       <dependency>
         <groupId>org.mongodb</groupId>
