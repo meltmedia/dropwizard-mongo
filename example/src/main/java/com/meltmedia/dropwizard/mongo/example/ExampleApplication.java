@@ -39,7 +39,7 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
           om.addMixInAnnotations(CredentialsConfiguration.class, EncryptCredentialsConfiguration.class);
         }).build());
     bootstrap.addBundle(mongoBundle = MongoBundle.<ExampleConfiguration>builder()
-        .configuration(ExampleConfiguration::getMongo)
+        .withConfiguration(ExampleConfiguration::getMongo)
         .build());
   }
 

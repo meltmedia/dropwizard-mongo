@@ -44,15 +44,15 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
   
   public static class Builder<C extends Configuration> {
     protected ConfigurationAccessor<C> configurationAccessor;
-    protected String healthCheck = "mongo";
+    protected String healthCheckName = "mongo";
     
-    public Builder<C> configuration( ConfigurationAccessor<C> configurationAccessor ) {
+    public Builder<C> withConfiguration( ConfigurationAccessor<C> configurationAccessor ) {
       this.configurationAccessor = configurationAccessor;
       return this;
     }
     
-    public Builder<C> healthCheck( String healthCheck ) {
-      this.healthCheck = healthCheck;
+    public Builder<C> withHealthCheckName( String healthCheckName ) {
+      this.healthCheckName = healthCheckName;
       return this;
     }
     
@@ -60,7 +60,7 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
       if( configurationAccessor == null ) {
         throw new IllegalArgumentException("configuration accessor is required.");
       }
-      return new MongoBundle<C>(configurationAccessor, healthCheck);
+      return new MongoBundle<C>(configurationAccessor, healthCheckName);
     }
   }
   
