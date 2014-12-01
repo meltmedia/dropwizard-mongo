@@ -1,0 +1,17 @@
+mongo:
+  seeds:
+  - host: "localhost"
+    port: 27017
+  database: "example"
+  credentials:
+    userName: "example"
+    password:
+      salt: "JrwBOA=="
+      iv: "wRTvFZ1whg55/FD61smnJQ=="
+      value: "M0tqYeSWT8E20KRB9WUdhQ=="
+      cipher: "aes-256-cbc"
+      keyDerivation: "pbkdf2"
+      keyLength: 256
+      iterations: 2000
+      encrypted: true
+
