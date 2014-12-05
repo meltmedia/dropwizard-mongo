@@ -17,7 +17,6 @@ package com.meltmedia.dropwizard.mongo;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.mongodb.DB;
-import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 
 public class MongoHealthCheck extends HealthCheck {

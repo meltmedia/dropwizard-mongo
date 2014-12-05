@@ -15,27 +15,13 @@
  */
 package com.meltmedia.dropwizard.mongo;
 
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.meltmedia.dropwizard.mongo.MongoClientFactory.Credentials;
-import com.meltmedia.dropwizard.mongo.MongoClientFactory.Server;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
-
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C> {
   public static Logger log = LoggerFactory.getLogger(MongoBundle.class);
