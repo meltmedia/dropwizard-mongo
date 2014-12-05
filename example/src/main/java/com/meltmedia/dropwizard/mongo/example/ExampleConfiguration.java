@@ -18,14 +18,14 @@ package com.meltmedia.dropwizard.mongo.example;
 import io.dropwizard.Configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.meltmedia.dropwizard.mongo.MongoConfiguration;
+import com.meltmedia.dropwizard.mongo.MongoClientFactory;
 
 public class ExampleConfiguration extends Configuration {
 
   @JsonProperty
-  protected MongoConfiguration mongo;
+  protected MongoClientFactory mongo;
 
-  public MongoConfiguration getMongo() {
+  public MongoClientFactory getMongo() {
     return mongo;
   }
 

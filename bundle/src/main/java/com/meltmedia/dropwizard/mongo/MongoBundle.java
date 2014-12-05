@@ -23,8 +23,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.meltmedia.dropwizard.mongo.MongoConfiguration.CredentialsConfiguration;
-import com.meltmedia.dropwizard.mongo.MongoConfiguration.ServerConfiguration;
+import com.meltmedia.dropwizard.mongo.MongoClientFactory.Credentials;
+import com.meltmedia.dropwizard.mongo.MongoClientFactory.Server;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -39,16 +39,16 @@ import io.dropwizard.setup.Environment;
 
 public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C> {
   public static Logger log = LoggerFactory.getLogger(MongoBundle.class);
-  public static interface ConfigurationAccessor<C extends Configuration> {
-    public MongoConfiguration configuration(C configuration);
+  public static interface FactoryAccessor<C extends Configuration> {
+    public MongoClientFactory configuration(C configuration);
   }
   
   public static class Builder<C extends Configuration> {
-    protected ConfigurationAccessor<C> configurationAccessor;
+    protected FactoryAccessor<C> factoryAccessor;
     protected String healthCheckName = "mongo";
     
-    public Builder<C> withConfiguration( ConfigurationAccessor<C> configurationAccessor ) {
-      this.configurationAccessor = configurationAccessor;
+    public Builder<C> withFactory( FactoryAccessor<C> factoryAccessor ) {
+      this.factoryAccessor = factoryAccessor;
       return this;
     }
     
@@ -58,10 +58,10 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
     }
     
     public MongoBundle<C> build() {
-      if( configurationAccessor == null ) {
+      if( factoryAccessor == null ) {
         throw new IllegalArgumentException("configuration accessor is required.");
       }
-      return new MongoBundle<C>(configurationAccessor, healthCheckName);
+      return new MongoBundle<C>(factoryAccessor, healthCheckName);
     }
   }
   
@@ -69,96 +69,22 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
     return new Builder<C>();
   }
   
-  protected ConfigurationAccessor<C> configurationAccessor;
+  protected FactoryAccessor<C> factoryAccessor;
   protected String healthCheckName;
 
-  // fields set during run method.
-  protected MongoClient client;
-  protected MongoConfiguration configuration;
-  protected DB database;
-
-  public MongoBundle(ConfigurationAccessor<C> configurationAccessor, String healthCheckName) {
-    this.configurationAccessor = configurationAccessor;
+  public MongoBundle(FactoryAccessor<C> factoryAccessor, String healthCheckName) {
+    this.factoryAccessor = factoryAccessor;
     this.healthCheckName = healthCheckName;
-  }
-  
-  /**
-   * Returns the client.  Will be defined after the run method has been called.
-   * 
-   * @return 
-   */
-  public MongoClient getClient() {
-    return client;
   }
 
   @Override
   public void run(C configuration, Environment environment) throws Exception {
-    this.configuration = configurationAccessor.configuration(configuration);
-    this.client = buildClient(this.configuration);
-    this.database = client.getDB(this.configuration.getDatabase());
-    
-    environment.lifecycle().manage(new MongoClientManager(client));
-    environment.healthChecks().register(healthCheckName, new MongoHealthCheck(client, this.configuration));
+    MongoClientFactory factory = factoryAccessor.configuration(configuration);
+    environment.healthChecks().register(healthCheckName, new MongoHealthCheck(factory.getDB(environment)));
   }
 
   @Override
   public void initialize(Bootstrap<?> bootstrap) {
   }
   
-  public DB getDatabase() {
-    return database;
-  }
-  
-  public MongoConfiguration getConfiguration() {
-    return this.configuration;
-  }
-  
-  MongoClient buildClient( MongoConfiguration mongoConfig ) {
-    try {
-      // build the seed server list.
-      List<ServerAddress> servers = new ArrayList<>();
-      for( ServerConfiguration seed : mongoConfig.getSeeds() ) {
-        servers.add(new ServerAddress(seed.getHost(), seed.getPort()));
-      }
-
-      log.info("Found {} mongo seed servers", servers.size());
-      for( ServerAddress server : servers ) {
-        log.info("Found mongo seed server {}:{}", server.getHost(), server.getPort());
-      }
-
-      // build the credentials
-      CredentialsConfiguration credentialConfig = mongoConfig.getCredentials();
-      List<MongoCredential> credentials = credentialConfig == null ?
-        Collections.<MongoCredential>emptyList() :
-        Collections.singletonList(MongoCredential.createMongoCRCredential(credentialConfig.getUserName(), mongoConfig.getDatabase(), credentialConfig
-        .getPassword().toCharArray()));
-
-      if( credentials.isEmpty() ) {
-        log.info("Found {} mongo credentials.", credentials.size());
-      }
-      else {
-        for( MongoCredential credential : credentials ) {
-          log.info("Found mongo credential for {} on database {}.", credential.getUserName(), credential.getSource());
-        }
-      }
-
-      // build the options.
-      MongoClientOptions options = new MongoClientOptions.Builder().writeConcern(writeConcern(mongoConfig.getWriteConcern())).build();
-
-      log.info("Mongo database is {}", mongoConfig.getDatabase());
-
-      return new MongoClient(servers, credentials, options);
-    } catch( UnknownHostException e ) {
-      throw new RuntimeException("Could not configure MongoDB client.", e);
-    }    
-  }
-
-  static WriteConcern writeConcern( String writeConcernString ) {
-    WriteConcern writeConcern = WriteConcern.valueOf(writeConcernString);
-    if( writeConcern == null ) {
-      throw new IllegalArgumentException(String.format("Unknown mongo write concern %s", writeConcernString));
-    }
-    return writeConcern;
-  }
-
 }
