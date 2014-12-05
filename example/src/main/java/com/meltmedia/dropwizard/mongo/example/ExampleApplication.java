@@ -35,7 +35,9 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
     bootstrap.addBundle(CryptoBundle.builder()
         .withMixins(om->{
           om.addMixInAnnotations(Credentials.class, EncryptCredentialsConfiguration.class);
-        }).build());
+        })
+        .withEnvironmentVariable("EXAMPLE_PASSPHRASE")
+        .build());
     bootstrap.addBundle(MongoBundle.<ExampleConfiguration>builder()
         .withFactory(ExampleConfiguration::getMongo)
         .build());

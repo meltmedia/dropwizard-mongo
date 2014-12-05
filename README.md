@@ -92,13 +92,26 @@ mongo:
 
 ## Building
 
-This project builds with Java8 and Maven 3.  Simply clone the repo and run
+This project builds with Java8 and Maven 3.  After cloning the repo, install the bundle from the root of the project.
 
 ```
 mvn clean install
 ```
 
-from the root directory.
+### Integration Tests
+
+You can also run integration tests while running the build.  First, you will need to
+make sure the configuration passphrase is in the environment.
+
+```
+export EXAMPLE_PASSPHRASE='correct horse battery staple'
+```
+
+Then run the build with the `integration-tests` profile.
+
+```
+mvn clean install -P integration-tests
+```
 
 ## Contributing
 
