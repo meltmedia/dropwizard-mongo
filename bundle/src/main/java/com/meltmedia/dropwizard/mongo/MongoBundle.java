@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.meltmedia.dropwizard.mongo.MongoConfiguration.CredentialsConfiguration;
 import com.meltmedia.dropwizard.mongo.MongoConfiguration.ServerConfiguration;
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
@@ -69,8 +70,12 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
   }
   
   protected ConfigurationAccessor<C> configurationAccessor;
-  protected MongoClient client;
   protected String healthCheckName;
+
+  // fields set during run method.
+  protected MongoClient client;
+  protected MongoConfiguration configuration;
+  protected DB database;
 
   public MongoBundle(ConfigurationAccessor<C> configurationAccessor, String healthCheckName) {
     this.configurationAccessor = configurationAccessor;
@@ -88,14 +93,24 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
 
   @Override
   public void run(C configuration, Environment environment) throws Exception {
-    MongoConfiguration mongoConfig = configurationAccessor.configuration(configuration);
-    client = buildClient(mongoConfig);
+    this.configuration = configurationAccessor.configuration(configuration);
+    this.client = buildClient(this.configuration);
+    this.database = client.getDB(this.configuration.getDatabase());
+    
     environment.lifecycle().manage(new MongoClientManager(client));
-    environment.healthChecks().register(healthCheckName, new MongoHealthCheck(client, mongoConfig));
+    environment.healthChecks().register(healthCheckName, new MongoHealthCheck(client, this.configuration));
   }
 
   @Override
   public void initialize(Bootstrap<?> bootstrap) {
+  }
+  
+  public DB getDatabase() {
+    return database;
+  }
+  
+  public MongoConfiguration getConfiguration() {
+    return this.configuration;
   }
   
   MongoClient buildClient( MongoConfiguration mongoConfig ) {
@@ -145,4 +160,5 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
     }
     return writeConcern;
   }
+
 }

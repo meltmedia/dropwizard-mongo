@@ -17,8 +17,6 @@ package com.meltmedia.dropwizard.mongo.example;
 
 import io.dropwizard.Configuration;
 
-import javax.validation.constraints.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.meltmedia.dropwizard.mongo.MongoConfiguration;
 

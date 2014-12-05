@@ -20,7 +20,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 import com.meltmedia.dropwizard.crypto.CryptoBundle;
-import com.meltmedia.dropwizard.mongo.*;
+import com.meltmedia.dropwizard.mongo.MongoBundle;
 import com.meltmedia.dropwizard.mongo.MongoConfiguration.CredentialsConfiguration;
 import com.meltmedia.dropwizard.mongo.example.resources.RootResource;
 import com.meltmedia.jackson.crypto.Encrypted;
@@ -45,7 +45,7 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
 
   @Override
   public void run(ExampleConfiguration config, Environment env) throws Exception {
-    env.jersey().register(new RootResource(mongoBundle.getClient()));
+    env.jersey().register(new RootResource(mongoBundle.getDatabase()));
   }
 
   public static interface EncryptCredentialsConfiguration {
