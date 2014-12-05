@@ -1,6 +1,6 @@
 # Dropwizard Mongo Example
 
-This example shows how to add mongo configuration to your Dropwizard project.
+This example shows how to add mongo configuration to your Dropwizard project.  The example application lets you do basic CRUD operations on the documents stored in Mongo.
 
 ## Before You Begin
 
@@ -43,4 +43,84 @@ You should see output like this if everything started properly.
 
 ```
 {"deadlocks":{"healthy":true},"mongo":{"healthy":true}}
+```
+
+## API Root
+
+### GET
+
+Getting the root of the application will get you a list of the collections.
+
+```
+curl http://localhost:8080/
+```
+
+```
+[
+  "name1",
+  "name2"
+]
+```
+
+## Collections
+
+### GET
+
+Getting a collection will list the ids.
+
+```
+curl http://localhost:8080/col
+```
+
+```
+[
+  "id1",
+  "id2"
+]
+```
+
+### POST
+
+Posting to a collection will insert a document.
+
+```
+curl -X POST -H "Content-Type: application/json" http://localhost:8080/col \
+-d '{"field", "value"}'
+```
+
+and return the documents id and location.
+
+### DELETE
+
+Deleting the collection will remove it from Mongo.
+
+```
+curl -X DELETE http://localhost:8080/col
+```
+
+## Documents
+
+### GET
+
+Getting a document's ID from a collection will return it.
+
+```
+curl http://localhost:8080/col/{id}
+```
+
+### PUT
+
+Putting a document to an ID in a collection will upsert the document.
+
+```
+curl -X PUT -H "Content-Type: application/json" http://localhost:8080/col/{id} \
+-d '{"field", "new value"}'
+```
+
+### DELETE
+
+Deleting a document's ID from a collection will delete it.
+
+```
+curl -X DELETE http://localhost:8080/col/{id}
 ```
