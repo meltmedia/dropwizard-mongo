@@ -16,23 +16,22 @@
 package com.meltmedia.dropwizard.mongo;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 
 public class MongoHealthCheck extends HealthCheck {
 
-  MongoClient mongoClient;
-  MongoConfiguration configuration;
+  DB db;
 
-  public MongoHealthCheck(MongoClient mongoClient, MongoConfiguration configuration) {
-    this.mongoClient = mongoClient;
-    this.configuration = configuration;
+  public MongoHealthCheck(DB db) {
+    this.db = db;
   }
 
   @Override
   protected Result check() throws Exception {
     try {
-      mongoClient.getDB(configuration.getDatabase()).command("isMaster");
+      db.command("isMaster");
       return Result.healthy();
     }
     catch( MongoException me ) {

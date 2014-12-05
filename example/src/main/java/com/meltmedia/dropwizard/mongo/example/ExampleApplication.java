@@ -21,7 +21,7 @@ import io.dropwizard.setup.Environment;
 
 import com.meltmedia.dropwizard.crypto.CryptoBundle;
 import com.meltmedia.dropwizard.mongo.MongoBundle;
-import com.meltmedia.dropwizard.mongo.MongoConfiguration.CredentialsConfiguration;
+import com.meltmedia.dropwizard.mongo.MongoClientFactory.Credentials;
 import com.meltmedia.dropwizard.mongo.example.resources.RootResource;
 import com.meltmedia.jackson.crypto.Encrypted;
 
@@ -30,22 +30,22 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
     new ExampleApplication().run(args);
   }
 
-  MongoBundle<ExampleConfiguration> mongoBundle;
-
   @Override
   public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
     bootstrap.addBundle(CryptoBundle.builder()
         .withMixins(om->{
-          om.addMixInAnnotations(CredentialsConfiguration.class, EncryptCredentialsConfiguration.class);
-        }).build());
-    bootstrap.addBundle(mongoBundle = MongoBundle.<ExampleConfiguration>builder()
-        .withConfiguration(ExampleConfiguration::getMongo)
+          om.addMixInAnnotations(Credentials.class, EncryptCredentialsConfiguration.class);
+        })
+        .withEnvironmentVariable("EXAMPLE_PASSPHRASE")
+        .build());
+    bootstrap.addBundle(MongoBundle.<ExampleConfiguration>builder()
+        .withFactory(ExampleConfiguration::getMongo)
         .build());
   }
 
   @Override
   public void run(ExampleConfiguration config, Environment env) throws Exception {
-    env.jersey().register(new RootResource(mongoBundle.getDatabase()));
+    env.jersey().register(new RootResource(config.getMongo().getDB(env)));
   }
 
   public static interface EncryptCredentialsConfiguration {
