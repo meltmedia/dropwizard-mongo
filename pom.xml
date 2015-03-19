@@ -21,7 +21,7 @@
   <parent>
     <groupId>com.meltmedia</groupId>
     <artifactId>meltmedia-oss</artifactId>
-    <version>2-SNAPSHOT</version>
+    <version>2.0.0</version>
   </parent>
   <groupId>com.meltmedia.dropwizard</groupId>
   <artifactId>dropwizard-mongo-parent</artifactId>
