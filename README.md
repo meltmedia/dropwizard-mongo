@@ -35,17 +35,17 @@ You will also need to include the project in your dependencies.
 
 ### Java
 
-Define the MongoClientFactory class somewhere in your applications configuration.
+Define the MongoConfiguration class somewhere in your applications configuration.
 
 ```
-import com.meltmedia.dropwizard.mongo.MongoClientFactory;
+import com.meltmedia.dropwizard.mongo.MongoConfiguration;
 
 ...
 
   @JsonProperty
-  protected MongoClientFactory mongo;
+  protected MongoConfiguration mongo;
 
-  public MongoClientFactory getMongo() {
+  public MongoConfiguration getMongo() {
     return mongo;
   }
 ```
@@ -56,21 +56,23 @@ Then include the bundle in the `initialize` method of your application.
 import com.meltmedia.dropwizard.mongo.MongoBundle;
 
 ...
+MongoBundle<C> mongoBundle;
+
 @Override
 public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
-  bootstrap.addBundle(MongoBundle.<ExampleConfiguration>builder()
-    .withFactory(ExampleConfiguration::getMongo)
+  bootstrap.addBundle(mongoBundle = MongoBundle.<ExampleConfiguration>builder()
+    .withConfiguration(ExampleConfiguration::getMongo)
     .build());
 }
 ```
 
-Finally, use the factory to access the client and database in your `run` method.
+Finally, use the bundle to access the client and database in your `run` method.
 
 ```
 @Override
 public void run(ExampleConfiguration config, Environment env) throws Exception {
-  MongoClient client = config.getMongo().getClient(env);
-  DB db = config.getMongo().getDB(env);
+  MongoClient client = mongoBundle.getClient();
+  DB db = mongoBundle.getDB();
   // do something cool.
 }
 ```

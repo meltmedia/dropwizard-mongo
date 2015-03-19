@@ -41,16 +41,16 @@ import com.mongodb.WriteConcern;
 
 public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C> {
   public static Logger log = LoggerFactory.getLogger(MongoBundle.class);
-  public static interface FactoryAccessor<C extends Configuration> {
+  public static interface ConfigurationAccessor<C extends Configuration> {
     public MongoConfiguration configuration(C configuration);
   }
   
   public static class Builder<C extends Configuration> {
-    protected FactoryAccessor<C> factoryAccessor;
+    protected ConfigurationAccessor<C> configurationAccessor;
     protected String healthCheckName = "mongo";
     
-    public Builder<C> withFactory( FactoryAccessor<C> factoryAccessor ) {
-      this.factoryAccessor = factoryAccessor;
+    public Builder<C> withConfiguration( ConfigurationAccessor<C> configurationAccessor ) {
+      this.configurationAccessor = configurationAccessor;
       return this;
     }
     
@@ -60,10 +60,10 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
     }
     
     public MongoBundle<C> build() {
-      if( factoryAccessor == null ) {
+      if( configurationAccessor == null ) {
         throw new IllegalArgumentException("configuration accessor is required.");
       }
-      return new MongoBundle<C>(factoryAccessor, healthCheckName);
+      return new MongoBundle<C>(configurationAccessor, healthCheckName);
     }
   }
   
@@ -71,19 +71,19 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
     return new Builder<C>();
   }
   
-  protected FactoryAccessor<C> factoryAccessor;
+  protected ConfigurationAccessor<C> configurationAccessor;
   protected String healthCheckName;
   protected MongoClient client;
   protected DB db;
 
-  public MongoBundle(FactoryAccessor<C> factoryAccessor, String healthCheckName) {
-    this.factoryAccessor = factoryAccessor;
+  public MongoBundle(ConfigurationAccessor<C> configurationAccessor, String healthCheckName) {
+    this.configurationAccessor = configurationAccessor;
     this.healthCheckName = healthCheckName;
   }
 
   @Override
   public void run(C configuration, Environment environment) throws Exception {
-    MongoConfiguration mongoConfiguration = factoryAccessor.configuration(configuration);
+    MongoConfiguration mongoConfiguration = configurationAccessor.configuration(configuration);
     client = buildClient(mongoConfiguration);
     environment.lifecycle().manage(new Managed() {
       @Override public void start() throws Exception {}

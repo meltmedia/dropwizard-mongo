@@ -38,7 +38,7 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
       om.addMixInAnnotations(Credentials.class, EncryptCredentialsConfiguration.class);
     }).withEnvironmentVariable("EXAMPLE_PASSPHRASE").build());
     bootstrap.addBundle(mongoBundle =
-        MongoBundle.<ExampleConfiguration> builder().withFactory(ExampleConfiguration::getMongo)
+        MongoBundle.<ExampleConfiguration> builder().withConfiguration(ExampleConfiguration::getMongo)
             .build());
   }
 
