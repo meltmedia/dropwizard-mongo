@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2014 meltmedia (christian.trimble@meltmedia.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.meltmedia.dropwizard.mongo.example.resources;
 
 import static org.hamcrest.Matchers.*;
@@ -20,31 +35,31 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 
-
 public class RootResourceIT {
 
   @ClassRule
   public static final DropwizardAppRule<ExampleConfiguration> RULE =
-          new DropwizardAppRule<ExampleConfiguration>(ExampleApplication.class, "conf/example.yml");
-  
+      new DropwizardAppRule<ExampleConfiguration>(ExampleApplication.class, "conf/example.yml");
+
   public static UriBuilder rootPath() {
     return UriBuilder.fromUri(String.format("http://localhost:%d", RULE.getLocalPort()));
   }
-  
-  public static GenericType<List<String>> STRING_LIST = new GenericType<List<String>>(){};
-  
+
+  public static GenericType<List<String>> STRING_LIST = new GenericType<List<String>>() {
+  };
+
   Client client;
-  
+
   @Before
   public void setUp() {
     client = new Client();
   }
-  
+
   @After
   public void tearDown() {
     client.destroy();
   }
- 
+
   @Test
   public void shouldCreateNewDocument() {
     ClientResponse response = postDocument("test", "{\"name\": \"value\"}");
@@ -52,46 +67,45 @@ public class RootResourceIT {
     assertThat(response.getStatus(), equalTo(201));
     assertThat(response.getHeaders().get("Location"), notNullValue());
   }
-  
+
   @Test
   public void shouldListDocuments() {
     removeCollection("test2");
 
-    String id1 = postDocument("test2", "{\"name\": \"value1\"}").getHeaders().get("X-Document-ID").get(0);
-    String id2 = postDocument("test2", "{\"name\": \"value2\"}").getHeaders().get("X-Document-ID").get(0);
-    
+    String id1 =
+        postDocument("test2", "{\"name\": \"value1\"}").getHeaders().get("X-Document-ID").get(0);
+    String id2 =
+        postDocument("test2", "{\"name\": \"value2\"}").getHeaders().get("X-Document-ID").get(0);
+
     List<String> ids = listCollection("test2");
-    
+
     assertThat(ids, containsInAnyOrder(id1, id2));
   }
-  
+
   @Test
   public void shouldListCollections() {
     removeCollection("test");
-    
+
     postDocument("test", "{\"name\": \"value1\"}");
-    
+
     List<String> collections = listCollections();
-    
+
     assertThat(collections.contains("test"), equalTo(true));
   }
-  
-  public ClientResponse postDocument( String collection, String document ) {
+
+  public ClientResponse postDocument(String collection, String document) {
     return client.resource(rootPath().path(collection).build())
-        .entity(document, "application/json")
-        .post(ClientResponse.class);    
+        .entity(document, "application/json").post(ClientResponse.class);
   }
-  
-  public List<String> listCollection( String collection ) {
-    return client.resource(rootPath().path("test2").build())
-        .get(STRING_LIST);
+
+  public List<String> listCollection(String collection) {
+    return client.resource(rootPath().path("test2").build()).get(STRING_LIST);
   }
-  
-  public ClientResponse removeCollection( String collection ) {
-    return client.resource(rootPath().path(collection).build())
-        .delete(ClientResponse.class);
+
+  public ClientResponse removeCollection(String collection) {
+    return client.resource(rootPath().path(collection).build()).delete(ClientResponse.class);
   }
-  
+
   public List<String> listCollections() {
     return client.resource(rootPath().build()).get(STRING_LIST);
   }

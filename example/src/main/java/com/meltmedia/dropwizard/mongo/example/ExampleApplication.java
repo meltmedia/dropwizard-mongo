@@ -29,20 +29,17 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
   public static void main(String[] args) throws Exception {
     new ExampleApplication().run(args);
   }
-  
+
   MongoBundle<ExampleConfiguration> mongoBundle;
 
   @Override
   public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
-    bootstrap.addBundle(CryptoBundle.builder()
-        .withMixins(om->{
-          om.addMixInAnnotations(Credentials.class, EncryptCredentialsConfiguration.class);
-        })
-        .withEnvironmentVariable("EXAMPLE_PASSPHRASE")
-        .build());
-    bootstrap.addBundle(mongoBundle = MongoBundle.<ExampleConfiguration>builder()
-        .withFactory(ExampleConfiguration::getMongo)
-        .build());
+    bootstrap.addBundle(CryptoBundle.builder().withMixins(om -> {
+      om.addMixInAnnotations(Credentials.class, EncryptCredentialsConfiguration.class);
+    }).withEnvironmentVariable("EXAMPLE_PASSPHRASE").build());
+    bootstrap.addBundle(mongoBundle =
+        MongoBundle.<ExampleConfiguration> builder().withFactory(ExampleConfiguration::getMongo)
+            .build());
   }
 
   @Override

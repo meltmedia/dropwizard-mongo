@@ -52,78 +52,73 @@ public class RootResource {
     this.database = database;
     this.jongo = new Jongo(database);
   }
-  
+
   @GET
   @Produces("application/json")
   public Set<String> collectionNames() {
     return database.getCollectionNames();
   }
-  
+
   @Path("{collectionName}")
-  public CollectionResource collection( @PathParam("collectionName") String name ) {
+  public CollectionResource collection(@PathParam("collectionName") String name) {
     return new CollectionResource(jongo.getCollection(name));
   }
-  
+
   public class CollectionResource {
-    
+
     MongoCollection collection;
 
     public CollectionResource(MongoCollection collection) {
       this.collection = collection;
     }
-    
+
     @GET
     @Produces("application/json")
     public List<String> list() {
       return collection.distinct("_id").as(String.class);
     }
-    
+
     @DELETE
     public void delete() {
-      collection.remove(); 
+      collection.remove();
     }
-    
+
     @GET
     @Path("{id}")
     @Produces("application/json")
-    public ObjectNode getDocument( @PathParam("id") String id ) {
+    public ObjectNode getDocument(@PathParam("id") String id) {
       ObjectNode node = collection.findOne("{_id: #}", id).as(ObjectNode.class);
-      if( node == null ) {
+      if (node == null) {
         throw new WebApplicationException(Response.status(Status.NOT_FOUND).build());
       }
       return node;
     }
-    
+
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response putDocument( @Context UriInfo uriInfo, Map<String, JsonNode> document ) {
+    public Response putDocument(@Context UriInfo uriInfo, Map<String, JsonNode> document) {
       ObjectId id = new ObjectId();
       document.put("_id", JsonNodeFactory.instance.textNode(id.toString()));
       collection.save(document);
-      return Response
-          .created(uriInfo
-              .getAbsolutePathBuilder()
-              .path(id.toString())
-              .build())
-          .header("X-Document-ID", id.toString())
-          .build();
+      return Response.created(uriInfo.getAbsolutePathBuilder().path(id.toString()).build())
+          .header("X-Document-ID", id.toString()).build();
     }
 
     @PUT
     @Path("{id}")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response putDocument( @PathParam("id") String id, Map<String, JsonNode> document ) {
+    public Response putDocument(@PathParam("id") String id, Map<String, JsonNode> document) {
       document.put("_id", JsonNodeFactory.instance.textNode(id));
       collection.save(document);
       return Response.noContent().build();
     }
-    
+
     @DELETE
     @Path("{id}")
     @Produces("application/json")
-    public Response deleteDocument(  @PathParam("id") String id ) {
+    public Response deleteDocument(@PathParam("id") String id) {
       collection.remove("{_id: #}", id);
       return Response.noContent().build();
     }
