@@ -56,7 +56,7 @@ Then include the bundle in the `initialize` method of your application.
 import com.meltmedia.dropwizard.mongo.MongoBundle;
 
 ...
-MongoBundle<C> mongoBundle;
+MongoBundle<ExampleConfiguration> mongoBundle;
 
 @Override
 public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
