@@ -30,6 +30,8 @@
     <program.file>dropwizard-mongo</program.file>
     <main.class>com.meltmedia.dropwizard.mongo.example.ExampleApplication</main.class>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <dependencies>
     <dependency>
