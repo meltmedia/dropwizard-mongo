@@ -8,6 +8,16 @@ A Dropwizard bundle for MongoDB.
 
 ### Maven
 
+Releases of this project are available on Maven Central.  You can include the project with this dependency:
+
+```
+<dependency>
+  <groupId>com.meltmedia.dropwizard</groupId>
+  <artifactId>dropwizard-mongo</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
 To use SNAPSHOTs of this project, you will need to include the sonatype repository in your POM.
 
 ```
@@ -29,7 +39,7 @@ You will also need to include the project in your dependencies.
 <dependency>
   <groupId>com.meltmedia.dropwizard</groupId>
   <artifactId>dropwizard-mongo</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
 </dependency>
 ```
 
