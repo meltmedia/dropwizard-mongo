@@ -72,6 +72,7 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
   }
   
   protected ConfigurationAccessor<C> configurationAccessor;
+  protected MongoConfiguration mongoConfiguration;
   protected String healthCheckName;
   protected MongoClient client;
   protected DB db;
@@ -83,7 +84,7 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
 
   @Override
   public void run(C configuration, Environment environment) throws Exception {
-    MongoConfiguration mongoConfiguration = configurationAccessor.configuration(configuration);
+    mongoConfiguration = configurationAccessor.configuration(configuration);
     client = buildClient(mongoConfiguration);
     environment.lifecycle().manage(new Managed() {
       @Override public void start() throws Exception {}
@@ -104,6 +105,11 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
   public DB getDB() {
     return db;
   }
+  
+  public MongoConfiguration getConfiguration() {
+    return mongoConfiguration;
+  }
+
   
   MongoClient buildClient(MongoConfiguration configuration) {
     try {
