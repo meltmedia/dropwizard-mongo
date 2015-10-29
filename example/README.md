@@ -13,7 +13,7 @@ The mongo password in the example is encrypted, so you will need to set the encr
 before starting the server.
 
 ```
-export EXAMPLE_PASSPHRASE='correct horse battery staple`
+export EXAMPLE_PASSPHRASE='correct horse battery staple'
 ```
 
 Also, we will need to start an instance of mongo to use the application with.  There is a vagrant file in the root
