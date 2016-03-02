@@ -112,7 +112,6 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
 
   
   MongoClient buildClient(MongoConfiguration configuration) {
-    try {
       // build the seed server list.
       List<ServerAddress> servers = new ArrayList<>();
       for( Server seed : configuration.getSeeds() ) {
@@ -146,9 +145,6 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
       log.info("Mongo database is {}", configuration.getDatabase());
 
       return new MongoClient(servers, credentials, options);
-    } catch( UnknownHostException e ) {
-      throw new RuntimeException("Could not configure MongoDB client.", e);
-    }    
   }
 
   static WriteConcern writeConcern( String writeConcernString ) {
