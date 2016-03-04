@@ -118,6 +118,7 @@ make sure the configuration passphrase is in the environment.
 ```
 export EXAMPLE_PASSPHRASE='correct horse battery staple'
 ```
+Second you need to install vagrant in version 1.5 and above.
 
 Then run the build with the `integration-tests` profile.
 
