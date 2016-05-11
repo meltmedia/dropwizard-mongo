@@ -20,8 +20,8 @@
 #
 
 # configure apt for mongo install
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
 
 # add source for Java 8
 sudo add-apt-repository -y ppa:webupd8team/java
@@ -29,10 +29,17 @@ sudo add-apt-repository -y ppa:webupd8team/java
 sudo apt-get update
 
 # install mongo
-sudo apt-get install -y mongodb-org=2.6.4 mongodb-org-server=2.6.4 mongodb-org-shell=2.6.4 mongodb-org-mongos=2.6.4 mongodb-org-tools=2.6.4
+sudo apt-get install -y mongodb-org=3.2.6 mongodb-org-server=3.2.6 mongodb-org-shell=3.2.6 mongodb-org-mongos=3.2.6 mongodb-org-tools=3.2.6
+
+# pin mongo versions
+echo "mongodb-org hold" | sudo dpkg --set-selections
+echo "mongodb-org-server hold" | sudo dpkg --set-selections
+echo "mongodb-org-shell hold" | sudo dpkg --set-selections
+echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
+echo "mongodb-org-tools hold" | sudo dpkg --set-selections
 
 # reconfigure mongo to bind to all interfaces.
-sudo sed -i"" 's/^bind_ip = 127.0.0.1/bind_ip = 0.0.0.0/' /etc/mongod.conf 
+sudo sed -i"" 's/^  bindIp: 127.0.0.1/  bindIp: 0.0.0.0/' /etc/mongod.conf 
 
 # restart mongo to apply config changes.
 sudo service mongod restart
