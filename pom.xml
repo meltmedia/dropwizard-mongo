@@ -25,7 +25,7 @@
   </parent>
   <groupId>com.meltmedia.dropwizard</groupId>
   <artifactId>dropwizard-mongo-parent</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
+  <version>0.3.0</version>
   <packaging>pom</packaging>
   <name>Dropwizard Mogno Parent</name>
   <description>A Dropwizard Bundle for accessing Mongo.</description>
@@ -43,7 +43,7 @@
     <connection>scm:git:git://github.com/meltmedia/dropwizard-mongo.git</connection>
     <developerConnection>scm:git:git@github.com:meltmedia/dropwizard-mongo.git</developerConnection>
     <url>https://github.com/meltmedia/dropwizard-mongo</url>
-    <tag>HEAD</tag>
+    <tag>v0.3.0</tag>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
