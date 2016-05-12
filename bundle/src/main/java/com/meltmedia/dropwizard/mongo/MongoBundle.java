@@ -15,7 +15,6 @@
  */
 package com.meltmedia.dropwizard.mongo;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -128,7 +127,7 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
       Credentials credentialConfig = configuration.getCredentials();
       List<MongoCredential> credentials = credentialConfig == null ?
         Collections.<MongoCredential>emptyList() :
-        Collections.singletonList(MongoCredential.createMongoCRCredential(credentialConfig.getUserName(), configuration.getDatabase(), credentialConfig
+        Collections.singletonList(MongoCredential.createCredential(credentialConfig.getUserName(), configuration.getDatabase(), credentialConfig
         .getPassword().toCharArray()));
 
       if( credentials.isEmpty() ) {
@@ -146,7 +145,7 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
       log.info("Mongo database is {}", configuration.getDatabase());
 
       return new MongoClient(servers, credentials, options);
-    } catch( UnknownHostException e ) {
+    } catch( Exception e ) {
       throw new RuntimeException("Could not configure MongoDB client.", e);
     }    
   }
