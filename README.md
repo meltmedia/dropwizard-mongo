@@ -14,7 +14,7 @@ Releases of this project are available on Maven Central.  You can include the pr
 <dependency>
   <groupId>com.meltmedia.dropwizard</groupId>
   <artifactId>dropwizard-mongo</artifactId>
-  <version>0.1.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
@@ -39,7 +39,7 @@ You will also need to include the project in your dependencies.
 <dependency>
   <groupId>com.meltmedia.dropwizard</groupId>
   <artifactId>dropwizard-mongo</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.4.0-SNAPSHOT</version>
 </dependency>
 ```
 
