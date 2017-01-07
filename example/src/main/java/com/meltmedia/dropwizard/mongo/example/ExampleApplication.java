@@ -23,6 +23,7 @@ import com.meltmedia.dropwizard.crypto.CryptoBundle;
 import com.meltmedia.dropwizard.mongo.MongoBundle;
 import com.meltmedia.dropwizard.mongo.MongoConfiguration.Credentials;
 import com.meltmedia.dropwizard.mongo.example.resources.RootResource;
+import com.meltmedia.dropwizard.mongo.rxoplog.RxOplogBundle;
 import com.meltmedia.jackson.crypto.Encrypted;
 
 public class ExampleApplication extends Application<ExampleConfiguration> {
@@ -31,6 +32,7 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
   }
 
   MongoBundle<ExampleConfiguration> mongoBundle;
+  RxOplogBundle<ExampleConfiguration> oplogBundle;
 
   @Override
   public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
@@ -40,6 +42,11 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
     bootstrap.addBundle(mongoBundle =
         MongoBundle.<ExampleConfiguration> builder()
             .withConfiguration(ExampleConfiguration::getMongo).build());
+    bootstrap.addBundle(oplogBundle = RxOplogBundle.<ExampleConfiguration>builder()
+      .with(config->serviceBuilder->serviceBuilder
+        .withMongoClient(mongoBundle::getClient)
+        .matchDatabase(config.getMongo().getDatabase()))
+      .build());
   }
 
   @Override
