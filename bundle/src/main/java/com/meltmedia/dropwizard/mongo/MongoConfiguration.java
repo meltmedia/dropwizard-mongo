@@ -15,26 +15,13 @@
  */
 package com.meltmedia.dropwizard.mongo;
 
-import io.dropwizard.lifecycle.Managed;
-import io.dropwizard.setup.Environment;
-
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
 
 public class MongoConfiguration {
   public static Logger log = LoggerFactory.getLogger(MongoBundle.class);

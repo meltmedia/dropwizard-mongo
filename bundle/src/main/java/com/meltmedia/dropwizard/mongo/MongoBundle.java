@@ -18,6 +18,7 @@ package com.meltmedia.dropwizard.mongo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
@@ -28,7 +29,6 @@ import io.dropwizard.setup.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.meltmedia.dropwizard.mongo.MongoConfiguration.Credentials;
 import com.meltmedia.dropwizard.mongo.MongoConfiguration.Server;
 import com.mongodb.DB;
@@ -40,15 +40,12 @@ import com.mongodb.WriteConcern;
 
 public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C> {
   public static Logger log = LoggerFactory.getLogger(MongoBundle.class);
-  public static interface ConfigurationAccessor<C extends Configuration> {
-    public MongoConfiguration configuration(C configuration);
-  }
-  
+
   public static class Builder<C extends Configuration> {
-    protected ConfigurationAccessor<C> configurationAccessor;
+    protected Function<C, MongoConfiguration> configurationAccessor;
     protected String healthCheckName = "mongo";
     
-    public Builder<C> withConfiguration( ConfigurationAccessor<C> configurationAccessor ) {
+    public Builder<C> withConfiguration( Function<C, MongoConfiguration> configurationAccessor ) {
       this.configurationAccessor = configurationAccessor;
       return this;
     }
@@ -70,20 +67,20 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
     return new Builder<C>();
   }
   
-  protected ConfigurationAccessor<C> configurationAccessor;
+  protected Function<C, MongoConfiguration> configurationAccessor;
   protected MongoConfiguration mongoConfiguration;
   protected String healthCheckName;
   protected MongoClient client;
   protected DB db;
 
-  public MongoBundle(ConfigurationAccessor<C> configurationAccessor, String healthCheckName) {
+  public MongoBundle(Function<C, MongoConfiguration> configurationAccessor, String healthCheckName) {
     this.configurationAccessor = configurationAccessor;
     this.healthCheckName = healthCheckName;
   }
 
   @Override
   public void run(C configuration, Environment environment) throws Exception {
-    mongoConfiguration = configurationAccessor.configuration(configuration);
+    mongoConfiguration = configurationAccessor.apply(configuration);
     client = buildClient(mongoConfiguration);
     environment.lifecycle().manage(new Managed() {
       @Override public void start() throws Exception {}

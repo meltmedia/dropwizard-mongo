@@ -16,11 +16,15 @@
 package com.meltmedia.dropwizard.mongo.example.resources;
 
 import static org.hamcrest.Matchers.*;
+import static javax.ws.rs.client.Entity.entity;
 import static org.hamcrest.MatcherAssert.*;
 
 import java.util.List;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 
 import io.dropwizard.testing.junit.DropwizardAppRule;
 
@@ -31,9 +35,9 @@ import org.junit.Test;
 
 import com.meltmedia.dropwizard.mongo.example.ExampleApplication;
 import com.meltmedia.dropwizard.mongo.example.ExampleConfiguration;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
+import org.glassfish.jersey.client.JerseyClient;
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.client.ClientResponse;
 
 public class RootResourceIT {
 
@@ -48,21 +52,21 @@ public class RootResourceIT {
   public static GenericType<List<String>> STRING_LIST = new GenericType<List<String>>() {
   };
 
-  Client client;
+  JerseyClient client;
 
   @Before
   public void setUp() {
-    client = new Client();
+    client = JerseyClientBuilder.createClient();
   }
 
   @After
   public void tearDown() {
-    client.destroy();
+    client.close();
   }
 
   @Test
   public void shouldCreateNewDocument() {
-    ClientResponse response = postDocument("test", "{\"name\": \"value\"}");
+    Response response = postDocument("test", "{\"name\": \"value\"}");
 
     assertThat(response.getStatus(), equalTo(201));
     assertThat(response.getHeaders().get("Location"), notNullValue());
@@ -73,9 +77,15 @@ public class RootResourceIT {
     removeCollection("test2");
 
     String id1 =
-        postDocument("test2", "{\"name\": \"value1\"}").getHeaders().get("X-Document-ID").get(0);
+        (String)postDocument("test2", "{\"name\": \"value1\"}")
+        .getHeaders()
+        .get("X-Document-ID")
+        .get(0);
     String id2 =
-        postDocument("test2", "{\"name\": \"value2\"}").getHeaders().get("X-Document-ID").get(0);
+        (String)postDocument("test2", "{\"name\": \"value2\"}")
+        .getHeaders()
+        .get("X-Document-ID")
+        .get(0);
 
     List<String> ids = listCollection("test2");
 
@@ -93,20 +103,27 @@ public class RootResourceIT {
     assertThat(collections.contains("test"), equalTo(true));
   }
 
-  public ClientResponse postDocument(String collection, String document) {
-    return client.resource(rootPath().path(collection).build())
-        .entity(document, "application/json").post(ClientResponse.class);
+  public Response postDocument(String collection, String document) {
+    return client.target(rootPath().path(collection).build())
+      .request("application/json")
+      .post(entity(document, "application/json"));
   }
 
   public List<String> listCollection(String collection) {
-    return client.resource(rootPath().path("test2").build()).get(STRING_LIST);
+    return client.target(rootPath().path("test2").build())
+      .request("application/json")
+      .get(STRING_LIST);
   }
 
   public ClientResponse removeCollection(String collection) {
-    return client.resource(rootPath().path(collection).build()).delete(ClientResponse.class);
+    return client.target(rootPath().path(collection).build())
+      .request()
+      .delete(ClientResponse.class);
   }
 
   public List<String> listCollections() {
-    return client.resource(rootPath().build()).get(STRING_LIST);
+    return client.target(rootPath().build())
+      .request("application/json")
+      .get(STRING_LIST);
   }
 }
