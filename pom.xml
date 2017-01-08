@@ -47,7 +47,7 @@
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <io.dropwizard.version>0.7.1</io.dropwizard.version>
+    <io.dropwizard.version>1.0.5</io.dropwizard.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <mongo.driver.version>3.2.2</mongo.driver.version>
