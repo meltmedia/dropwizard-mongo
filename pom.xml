@@ -50,7 +50,7 @@
     <io.dropwizard.version>1.0.5</io.dropwizard.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <mongo.driver.version>3.2.2</mongo.driver.version>
+    <mongo.driver.version>3.4.1</mongo.driver.version>
   </properties>
   <repositories>
     <repository>
