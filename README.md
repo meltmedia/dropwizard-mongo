@@ -102,6 +102,69 @@ mongo:
     password: example
 ```
 
+### RxJava2 Oplog Service
+
+Starting with version 0.4.0, this service provides an oplog watching service.  It provides a hot, sharable observable, suitable for restarting processors on collection changes.
+
+To use the service, include the JavaRx2 dependency.
+
+```
+<dependency>
+  <groupId>io.reactivex.rxjava2</groupId>
+  <artifactId>rxjava</artifactId>
+  <version>2.0.4</version>
+</dependency>
+```
+
+Then include the bundle in the `initialize` method of your application, after the bundle for the client.
+
+```
+import com.meltmedia.dropwizard.mongo.MongoBundle;
+import com.meltmedia.dropwizard.mongo.rxoplog.RxOplogBundle;
+
+...
+MongoBundle<ExampleConfiguration> mongoBundle;
+RxOplogBundle<ExampleConfiguration> oplogBundle;
+
+@Override
+public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
+  bootstrap.addBundle(mongoBundle = MongoBundle.<ExampleConfiguration>builder()
+    .withConfiguration(ExampleConfiguration::getMongo)
+    .build());
+  bootstrap.addBundle(oplogBundle = RxOplogBundle.<ExampleConfiguration>builder()
+    .with(config->serviceBuilder->serviceBuilder
+      .withMongoClient(mongoBundle::getClient)
+      .matchDatabase(config.getMongo().getDatabase()))
+    .build());
+}
+```
+
+Then you can access the service in the `run` method.
+
+```
+@Override
+public void run(ExampleConfiguration config, Environment env) throws Exception {
+  RxOplogService oplog = oplogBundle.getOplogService();
+  
+  env.lifecycle().manage(new Managed() {
+    Disposable disposable;
+    @Override
+    public void start() throws Exception {
+      disposable = oplogBundle.getOplogService()
+        .getOplog()
+        .forEach(doc->{
+          // do something cool
+        });
+    }
+
+    @Override
+    public void stop() throws Exception {
+      if( disposable != null ) disposable.dispose();
+    }
+  });
+}
+```
+
 ## Building
 
 This project builds with Java8 and Maven 3.  After cloning the repo, install the bundle from the root of the project.

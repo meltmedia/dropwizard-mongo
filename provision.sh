@@ -39,7 +39,13 @@ echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
 echo "mongodb-org-tools hold" | sudo dpkg --set-selections
 
 # reconfigure mongo to bind to all interfaces.
-sudo sed -i"" 's/^  bindIp: 127.0.0.1/  bindIp: 0.0.0.0/' /etc/mongod.conf 
+sudo sed -i"" 's/^  bindIp: 127.0.0.1/  bindIp: 0.0.0.0/' /etc/mongod.conf
+
+sudo cat <<EOT >> /etc/mongod.conf
+replication:
+   oplogSizeMB: 1024
+   replSetName: rs0
+EOT
 
 # restart mongo to apply config changes.
 sudo service mongod restart
@@ -49,4 +55,6 @@ echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | su
 sudo apt-get install oracle-java8-installer --assume-yes
 
 # add the example user.
-mongo example --eval 'db.createUser({user: "example", pwd: "example", roles: ["readWrite"]});'
+mongo -eval 'db.createUser({user: "example", pwd: "example", roles:[{role: "read", db: "local"}, {role: "readWrite", db:"example"}]})'
+
+mongo --eval "rs.initiate()"

@@ -78,6 +78,7 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
     this.healthCheckName = healthCheckName;
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public void run(C configuration, Environment environment) throws Exception {
     mongoConfiguration = configurationAccessor.apply(configuration);

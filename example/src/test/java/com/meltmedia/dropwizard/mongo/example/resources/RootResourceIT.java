@@ -21,7 +21,6 @@ import static org.hamcrest.MatcherAssert.*;
 
 import java.util.List;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
