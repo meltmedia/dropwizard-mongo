@@ -33,6 +33,7 @@ public class RxOplogBundle<C extends Configuration> implements ConfiguredBundle<
 
   Function<C, Consumer<RxOplogService.Builder>> builderOps;
   RxOplogService service;
+  RxOplogHealthCheck healthCheck;
   
   public RxOplogBundle( Function<C, Consumer<RxOplogService.Builder>> builderOps ) {
     this.builderOps = builderOps;
@@ -47,6 +48,11 @@ public class RxOplogBundle<C extends Configuration> implements ConfiguredBundle<
     service = RxOplogService.builder()
       .with(builderOps.apply(config))
       .build();
+    
+    healthCheck = new RxOplogHealthCheck(service);
+    
+    env.lifecycle().manage(healthCheck);
+    env.healthChecks().register("mongo-oplog", healthCheck);
   }
   
   public RxOplogService getOplogService() {
