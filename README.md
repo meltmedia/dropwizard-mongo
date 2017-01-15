@@ -39,7 +39,7 @@ You will also need to include the project in your dependencies.
 <dependency>
   <groupId>com.meltmedia.dropwizard</groupId>
   <artifactId>dropwizard-mongo</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.5.0-SNAPSHOT</version>
 </dependency>
 ```
 
