@@ -108,7 +108,7 @@ public class MongoBundle<C extends Configuration> implements ConfiguredBundle<C>
   }
 
   
-  MongoClient buildClient(MongoConfiguration configuration) {
+  public MongoClient buildClient(MongoConfiguration configuration) {
     try {
       // build the seed server list.
       List<ServerAddress> servers = new ArrayList<>();
