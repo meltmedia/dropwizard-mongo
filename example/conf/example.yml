@@ -1,3 +1,4 @@
+---
 mongo:
   seeds:
   - host: "localhost"
@@ -6,12 +7,10 @@ mongo:
   credentials:
     userName: "example"
     password:
-      salt: "JrwBOA=="
-      iv: "wRTvFZ1whg55/FD61smnJQ=="
-      value: "M0tqYeSWT8E20KRB9WUdhQ=="
+      salt: "pMHIbQ=="
+      iv: "CBJMai3Ub9zFZaG1nlbFmA=="
+      value: "JQvS65qD32WtZ3KK3+cWMg=="
       cipher: "aes-256-cbc"
       keyDerivation: "pbkdf2"
-      keyLength: 256
+      keyLength: 128
       iterations: 2000
-      encrypted: true
-

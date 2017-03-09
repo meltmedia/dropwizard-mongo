@@ -36,9 +36,13 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
 
   @Override
   public void initialize(Bootstrap<ExampleConfiguration> bootstrap) {
-    bootstrap.addBundle(CryptoBundle.builder().withMixins(om -> {
-      om.addMixIn(Credentials.class, EncryptCredentialsConfiguration.class);
-    }).withEnvironmentVariable("EXAMPLE_PASSPHRASE").build());
+    bootstrap.addBundle(CryptoBundle.builder()
+      .withMixins(om -> {
+        om.addMixIn(Credentials.class, EncryptCredentialsConfiguration.class);
+      })
+      .withEnvironmentVariable("EXAMPLE_PASSPHRASE")
+      .withKeyLength(128)
+      .build());
     bootstrap.addBundle(mongoBundle =
         MongoBundle.<ExampleConfiguration> builder()
             .withConfiguration(ExampleConfiguration::getMongo).build());
