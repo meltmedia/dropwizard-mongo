@@ -51,6 +51,7 @@ public class ExampleApplication extends Application<ExampleConfiguration> {
         .withMongoClient(mongoBundle::getClient)
         .matchDatabase(config.getMongo().getDatabase()))
       .build());
+    Commands.register(bootstrap);
   }
 
   @Override
