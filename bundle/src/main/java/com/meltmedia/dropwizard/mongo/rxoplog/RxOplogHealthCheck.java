@@ -18,8 +18,6 @@ package com.meltmedia.dropwizard.mongo.rxoplog;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.codahale.metrics.health.HealthCheck;
-import com.mongodb.DB;
-import com.mongodb.MongoException;
 
 import io.dropwizard.lifecycle.Managed;
 import io.reactivex.disposables.Disposable;
