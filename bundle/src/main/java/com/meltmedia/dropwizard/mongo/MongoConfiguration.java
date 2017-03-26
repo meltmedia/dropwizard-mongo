@@ -35,7 +35,6 @@ public class MongoConfiguration {
   protected Credentials credentials;
   @NotNull
   protected String database;
-  @JsonDeserialize(converter=JsonConverters.StringToWriteConcern.class)
   protected boolean enabled = true;
   protected Boolean alwaysUseMBeans;
   protected Integer connectionsPerHost;
