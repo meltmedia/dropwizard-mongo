@@ -101,9 +101,11 @@ public class MongoClientBuilder {
   
   static List<MongoCredential> createCredentials( MongoConfiguration configuration ) {
     Credentials credentialConfig = configuration.getCredentials();
+    final String authenticationDatabase = Optional.ofNullable(configuration.getAuthenticationDatabase())
+            .orElse(configuration.getDatabase());
     List<MongoCredential> credentials = credentialConfig == null ?
     Collections.<MongoCredential>emptyList() :
-    Collections.singletonList(MongoCredential.createCredential(credentialConfig.getUserName(), configuration.getDatabase(), credentialConfig
+    Collections.singletonList(MongoCredential.createCredential(credentialConfig.getUserName(), authenticationDatabase, credentialConfig
       .getPassword().toCharArray()));
       
     if( credentials.isEmpty() ) {

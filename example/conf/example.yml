@@ -4,6 +4,7 @@ mongo:
   - host: "localhost"
     port: 27017
   database: "example"
+  authenticationDatabase: "admin"
   credentials:
     userName: "example"
     password:
