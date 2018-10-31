@@ -37,6 +37,7 @@ public class MongoConfiguration {
   protected String database;
   protected boolean enabled = true;
   protected Boolean alwaysUseMBeans;
+  protected String authenticationDatabase;
   protected Integer connectionsPerHost;
   protected Integer connectTimeout;
   protected Boolean cursorFinalizerEnabled;
@@ -95,6 +96,12 @@ public class MongoConfiguration {
     this.database = database;
   }
 
+  public String getAuthenticationDatabase() {
+    return authenticationDatabase;
+  }
+  public void setAuthenticationDatabase( String authenticationDatabase ) {
+    this.authenticationDatabase = authenticationDatabase;
+  }
   public Boolean getAlwaysUseMBeans() {
     return alwaysUseMBeans;
   }

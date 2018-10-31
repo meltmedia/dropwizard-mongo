@@ -15,11 +15,16 @@
  */
 package com.meltmedia.dropwizard.mongo.junit;
 
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import com.mongodb.MongoClient;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A JUnit Rule for creating a mongo client. This rule is designed to be used as
@@ -33,10 +38,24 @@ public class MongoRule
   MongoClient mongoClient;
   String host;
   int port;
+  String user;
+  String password;
+  String authenticationDatabase;
 
   public MongoRule( String host, int port ) {
     this.host = host;
     this.port = port;
+  }
+
+  public MongoRule( String host, int port , String user, String password ) {
+    this(host, port);
+    this.user = user;
+    this.password = password;
+  }
+
+  public MongoRule( String host, int port, String user, String password, String authenticationDatabase ) {
+    this(host, port, user, password);
+    this.authenticationDatabase = authenticationDatabase;
   }
 
   /**
@@ -58,7 +77,10 @@ public class MongoRule
       @Override
       public void evaluate() throws Throwable {
         try {
-          mongoClient = new MongoClient(host, port);
+          final MongoCredential credential = MongoCredential.createCredential(user,authenticationDatabase, password.toCharArray());
+          final List<MongoCredential> creds = Arrays.asList(credential);
+          final ServerAddress dbAddress = new ServerAddress(host, port);
+          mongoClient = new MongoClient(dbAddress, creds);
           statement.evaluate();
         } finally {
           if( mongoClient != null ) {
