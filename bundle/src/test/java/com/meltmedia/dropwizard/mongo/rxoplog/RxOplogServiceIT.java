@@ -25,7 +25,7 @@ import static org.hamcrest.MatcherAssert.*;
  */
 public class RxOplogServiceIT {
   @ClassRule
-  public static MongoRule mongo = new MongoRule("localhost", 27017);
+  public static MongoRule mongo = new MongoRule("localhost", 27017, "admin", "password", "admin");
   
   @Test
   public void clientWorks() {

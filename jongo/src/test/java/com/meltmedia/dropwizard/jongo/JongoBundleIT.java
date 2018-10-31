@@ -17,7 +17,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 public class JongoBundleIT {
-  @ClassRule public static MongoRule mongoRule = new MongoRule("localhost", 27017);
+  @ClassRule public static MongoRule mongoRule = new MongoRule("localhost", 27017, "admin", "password", "admin");
   
   Bootstrap<?> bootstrap = mock(Bootstrap.class);
   Configuration configuration = mock(Configuration.class);

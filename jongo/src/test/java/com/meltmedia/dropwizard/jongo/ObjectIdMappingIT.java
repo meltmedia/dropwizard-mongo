@@ -21,7 +21,7 @@ import com.meltmedia.dropwizard.mongo.junit.MongoRule;
  *
  */
 public class ObjectIdMappingIT {
-  @ClassRule public static MongoRule mongoRule = new MongoRule("localhost", 27017);
+  @ClassRule public static MongoRule mongoRule = new MongoRule("localhost", 27017, "admin", "password", "admin");
   
   public abstract class ObjectIdOnly {
     @org.jongo.marshall.jackson.oid.MongoObjectId
